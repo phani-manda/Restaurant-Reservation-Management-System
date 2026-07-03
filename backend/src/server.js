@@ -3,6 +3,8 @@ import cors from 'cors';
 import { env } from './config/env.js';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import reservationRoutes from './routes/reservationRoutes.js';
+import tableRoutes from './routes/tableRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
@@ -15,6 +17,8 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/reservations', reservationRoutes);
+app.use('/api/tables', tableRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
