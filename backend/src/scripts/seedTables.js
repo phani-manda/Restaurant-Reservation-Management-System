@@ -20,7 +20,13 @@ const seedTables = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    await Table.deleteMany({});
+    const existingCount = await Table.countDocuments();
+    if (existingCount > 0) {
+      console.log(`Skipped seeding because ${existingCount} tables already exist`);
+      await mongoose.disconnect();
+      process.exit(0);
+    }
+
     const tables = await Table.insertMany(defaultTables);
 
     console.log(`Seeded ${tables.length} tables:`);
