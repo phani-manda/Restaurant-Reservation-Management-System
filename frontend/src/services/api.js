@@ -21,6 +21,10 @@ export const apiRequest = async (endpoint, options = {}) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+    }
+
     throw new Error(data.message || 'Something went wrong');
   }
 

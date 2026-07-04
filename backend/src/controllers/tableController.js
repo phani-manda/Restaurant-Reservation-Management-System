@@ -1,6 +1,5 @@
 import { Table } from '../models/Table.js';
 import { Reservation } from '../models/Reservation.js';
-import { RESERVATION_STATUS } from '../constants/index.js';
 import { AppError } from '../utils/AppError.js';
 
 export const getTables = async (_req, res, next) => {
@@ -52,14 +51,11 @@ export const updateTable = async (req, res, next) => {
 
 export const deleteTable = async (req, res, next) => {
   try {
-    const activeReservations = await Reservation.countDocuments({
-      table: req.params.id,
-      status: RESERVATION_STATUS.ACTIVE,
-    });
+    const reservationCount = await Reservation.countDocuments({ table: req.params.id });
 
-    if (activeReservations > 0) {
+    if (reservationCount > 0) {
       return next(
-        new AppError('Cannot delete table with active reservations.', 400)
+        new AppError('Cannot delete a table with reservation history. Deactivate it instead.', 400)
       );
     }
 

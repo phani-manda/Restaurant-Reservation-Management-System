@@ -12,15 +12,16 @@ const formatUser = (user) => ({
 
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return next(new AppError('Email is already registered.', 409));
+      return next(new AppError('This email is already registered. Please log in or use a different email.', 409));
     }
 
     const user = await User.create({
-      name,
+      name: name?.trim(),
       email,
       password,
       role: ROLES.CUSTOMER,
@@ -40,7 +41,8 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const { password } = req.body;
 
     const user = await User.findOne({ email }).select('+password');
     if (!user || !(await user.comparePassword(password))) {

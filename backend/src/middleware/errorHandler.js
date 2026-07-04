@@ -6,8 +6,12 @@ export const errorHandler = (err, _req, res, _next) => {
 
   if (err.code === 11000) {
     statusCode = 409;
-    const field = Object.keys(err.keyValue || {})[0] || 'field';
-    message = `Duplicate value for ${field}. Please use a different value.`;
+    const field = Object.keys(err.keyPattern || err.keyValue || {})[0] || 'field';
+    const duplicateMessages = {
+      email: 'This email is already registered. Please log in or use a different email.',
+      username: 'This email is already registered. Please log in or use a different email.',
+    };
+    message = duplicateMessages[field] || `Duplicate value for ${field}. Please use a different value.`;
   }
 
   if (err.name === 'ValidationError') {

@@ -16,6 +16,15 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Restaurant Reservation API is running' });
 });
 
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/tables', tableRoutes);
@@ -30,4 +39,11 @@ const startServer = async () => {
   });
 };
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer().catch((error) => {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  });
+}
+
+export default app;
