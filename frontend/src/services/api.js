@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const configuredApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, '');
+const API_URL = normalizedApiUrl.endsWith('/api') ? normalizedApiUrl : `${normalizedApiUrl}/api`;
 
 const getToken = () => localStorage.getItem('token');
 
