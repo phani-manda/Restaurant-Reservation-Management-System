@@ -12,6 +12,14 @@ const app = express();
 app.use(cors({ origin: env.clientUrl, credentials: true }));
 app.use(express.json());
 
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    message: 'Restaurant Reservation API is running',
+    health: '/api/health',
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Restaurant Reservation API is running' });
 });
