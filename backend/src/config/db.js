@@ -5,6 +5,32 @@ import { Table } from '../models/Table.js';
 import { Reservation } from '../models/Reservation.js';
 
 let indexesSynced = false;
+let defaultTablesEnsured = false;
+
+const defaultTables = [
+  { tableNumber: 1, capacity: 2 },
+  { tableNumber: 2, capacity: 2 },
+  { tableNumber: 3, capacity: 4 },
+  { tableNumber: 4, capacity: 4 },
+  { tableNumber: 5, capacity: 6 },
+  { tableNumber: 6, capacity: 6 },
+  { tableNumber: 7, capacity: 8 },
+  { tableNumber: 8, capacity: 10 },
+];
+
+const ensureDefaultTables = async () => {
+  if (defaultTablesEnsured) {
+    return;
+  }
+
+  const tableCount = await Table.countDocuments();
+  if (tableCount === 0) {
+    await Table.insertMany(defaultTables);
+    console.log(`Seeded ${defaultTables.length} default tables`);
+  }
+
+  defaultTablesEnsured = true;
+};
 
 export const connectDB = async () => {
   try {
@@ -29,6 +55,8 @@ export const connectDB = async () => {
       indexesSynced = true;
       console.log('Database indexes synced');
     }
+
+    await ensureDefaultTables();
 
     return mongoose.connection;
   } catch (error) {
